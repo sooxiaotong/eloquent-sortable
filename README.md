@@ -114,6 +114,13 @@ You can swap the order of two models:
 MyModel::swapOrder($myModel, $anotherModel);
 ```
 
+You can move a model after another one:
+
+```php 
+$myModel->moveAfter($anotherModel);
+```
+
+
 ### Grouping
 
 If your model/table has a grouping field (usually a foreign key): `id, `**`user_id`**`, title, order_column`
