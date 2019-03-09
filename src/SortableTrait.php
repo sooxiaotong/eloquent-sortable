@@ -33,7 +33,7 @@ trait SortableTrait
      */
     public function getHighestOrderNumber(): int
     {
-        return (int)$this->buildSortQuery()->max($this->determineOrderColumnName());
+        return (int) $this->buildSortQuery()->max($this->determineOrderColumnName());
     }
 
     /**
@@ -60,7 +60,7 @@ trait SortableTrait
      */
     public static function setNewOrder($ids, int $startOrder = 1)
     {
-        if (!is_array($ids) && !$ids instanceof ArrayAccess) {
+        if (! is_array($ids) && ! $ids instanceof ArrayAccess) {
             throw new InvalidArgumentException('You must pass an array or ArrayAccess object to setNewOrder');
         }
 
@@ -83,7 +83,7 @@ trait SortableTrait
     {
         if (
             isset($this->sortable['order_column_name']) &&
-            !empty($this->sortable['order_column_name'])
+            ! empty($this->sortable['order_column_name'])
         ) {
             return $this->sortable['order_column_name'];
         }
@@ -113,7 +113,7 @@ trait SortableTrait
             ->where($orderColumnName, '>', $this->$orderColumnName)
             ->first();
 
-        if (!$swapWithModel) {
+        if (! $swapWithModel) {
             return $this;
         }
 
@@ -134,7 +134,7 @@ trait SortableTrait
             ->where($orderColumnName, '<', $this->$orderColumnName)
             ->first();
 
-        if (!$swapWithModel) {
+        if (! $swapWithModel) {
             return $this;
         }
 
@@ -234,39 +234,5 @@ trait SortableTrait
     public function buildSortQuery()
     {
         return static::query();
-    }
-
-    /**
-     * Moves the model after the passed one
-     *
-     * @param Sortable $model
-     */
-    public function moveAfter(Sortable $model)
-    {
-        $orderColumnName = $this->determineOrderColumnName();
-        $oldPosition = $this->$orderColumnName;
-        $newPosition = $model->$orderColumnName;
-
-        if ($oldPosition === $newPosition) {
-            return;
-        }
-
-        $positionCalculator = new PositionCalculator;
-        $movedAfter = true;
-        $movingForward = $oldPosition < $newPosition;
-        $method = $movingForward ? 'decrement' : 'increment';
-
-
-        $this->buildSortQuery()
-            ->where($orderColumnName, '>', min([$oldPosition, $newPosition]))
-            ->where($orderColumnName, '<', max([$oldPosition, $newPosition]))
-            ->$method($orderColumnName);
-
-
-        $this->$orderColumnName = $positionCalculator($movedAfter, $movingForward, $newPosition);
-        $model->$orderColumnName = $positionCalculator(!$movedAfter, $movingForward, $newPosition);
-
-        $this->save();
-        $model->save();
     }
 }
