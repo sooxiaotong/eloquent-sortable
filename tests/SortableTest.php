@@ -267,4 +267,56 @@ class SortableTest extends TestCase
             }
         }
     }
+    
+    /**
+     * @test
+     */
+    public function it_can_move_a_model_after_another_model()
+    {
+        $model = Dummy::find(3);
+        $anotherModel = Dummy::find(4);
+
+        $model->moveAfter($anotherModel);
+
+        $this->assertEquals(4, $model->order_column);
+        $this->assertEquals(3, $anotherModel->order_column);
+    }
+
+    /**
+     * @test
+     */
+    public function it_reorder_elements_when_moving_a_model_forward_after_a_model()
+    {
+        $model = Dummy::find(3);
+        $fourth = Dummy::find(4);
+        $fifth = Dummy::find(5);
+        $anotherModel = Dummy::find(6);
+
+        $model->moveAfter($anotherModel);
+
+        $this->assertEquals(6, $model->order_column);
+        $this->assertEquals(5, $anotherModel->order_column);
+        $this->assertEquals(3, $fourth->order_column);
+        $this->assertEquals(4, $fifth->order_column);
+    }
+
+    /**
+     * @test
+     */
+    public function it_reorder_elements_when_moving_a_model_backward_after_a_model()
+    {
+        $model = Dummy::find(6);
+        $fourth = Dummy::find(4);
+        $fifth = Dummy::find(5);
+        $anotherModel = Dummy::find(3);
+
+        $model->moveAfter($anotherModel);
+
+        $this->assertEquals(4, $model->order_column);
+        $this->assertEquals(3, $anotherModel->order_column);
+//        $this->assertEquals(3, $fourth->order_column);
+//        $this->assertEquals(4, $fifth->order_column);
+    }
+
+
 }
