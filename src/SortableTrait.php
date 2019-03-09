@@ -243,30 +243,18 @@ trait SortableTrait
      */
     public function moveAfter(Sortable $model)
     {
-        $orderColumnName = $this->determineOrderColumnName();
-        $oldPosition = $this->$orderColumnName;
-        $newPosition = $model->$orderColumnName;
+        $moveModels = new MoveModels($this->determineOrderColumnName());
+        $moveModels('moveAfter', $this, $model);
+    }
 
-        if ($oldPosition === $newPosition) {
-            return;
-        }
-
-        $positionCalculator = new PositionCalculator;
-        $movedAfter = true;
-        $movingForward = $oldPosition < $newPosition;
-        $method = $movingForward ? 'decrement' : 'increment';
-
-
-        $this->buildSortQuery()
-            ->where($orderColumnName, '>', min([$oldPosition, $newPosition]))
-            ->where($orderColumnName, '<', max([$oldPosition, $newPosition]))
-            ->$method($orderColumnName);
-
-
-        $this->$orderColumnName = $positionCalculator($movedAfter, $movingForward, $newPosition);
-        $model->$orderColumnName = $positionCalculator(!$movedAfter, $movingForward, $newPosition);
-
-        $this->save();
-        $model->save();
+    /**
+     * Moves the model before the passed one
+     *
+     * @param Sortable $model
+     */
+    public function moveBefore(Sortable $model)
+    {
+        $moveModels = new MoveModels($this->determineOrderColumnName());
+        $moveModels('moveBefore', $this, $model);
     }
 }

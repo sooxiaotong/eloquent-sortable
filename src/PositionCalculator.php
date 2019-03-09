@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Spatie\EloquentSortable;
-
 
 class PositionCalculator
 {

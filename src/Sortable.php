@@ -38,4 +38,9 @@ interface Sortable
      * Moves the model after another model
      */
     public function moveAfter(Sortable $model);
+
+    /**
+     * Moves the model before another model
+     */
+    public function moveBefore(Sortable $model);
 }
